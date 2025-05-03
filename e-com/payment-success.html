@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Success</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #404040;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .message-box {
+      text-align: center;
+      background: #e0ffe0;
+      padding: 30px;
+      border: 2px solid #4caf50;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-box h2 {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="message-box">
+    <h2>✅ Payment Successful!</h2>
+    <p id="paymentMessage">Redirecting to order confirmation...</p>
+  </div>
+ <script>
+  // Get payment method from localStorage
+  const method = localStorage.getItem("paymentMethod");
+
+  // Display message
+  if (method) {
+    document.getElementById("paymentMessage").innerHTML = `
+      Payment done via <strong>${method.toUpperCase()}</strong>.<br>
+      💸 Your payment is confirmed and will be shipped soon!
+    `;
+    // Optionally clear the payment method after use
+    localStorage.removeItem("paymentMethod");
+  } else {
+    document.getElementById("paymentMessage").textContent = "Payment method unknown.";
+  }
+
+  // Add GIF below the confirmation message
+  document.getElementById("paymentMessage").innerHTML += `
+    <img src="e-comimg/tick.gif" style="width: 100%; max-width: 600px; display: block; margin-top: 20px;">
+  `;
+
+  // Wait 2 seconds then redirect to order confirmation page
+  setTimeout(() => {
+    window.location.href = "order-confirmation.html";
+  }, 3000); // Reduced delay to 2 seconds
+</script>
+</body>
+</html>

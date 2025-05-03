@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #404040;
+    }
+    header {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+    .payment-container {
+      max-width: 600px;
+      height: 700px;
+      margin: 40px auto;
+      padding: 25px;
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: white;
+    }
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .method {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .method:hover {
+      background-color: #f0f0f0;
+    }
+    .method.active {
+      border: 2px solid #00b894;
+      background-color: #e6fffa;
+    }
+
+    .method i {
+      font-size: 18px;
+      color: #333;
+    }
+    .payment-details {
+      margin-top: 25px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .payment-details input,
+    .payment-details select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #bbb;
+    }
+    .submit-btn {
+      margin-top: 20px;
+      padding: 14px;
+      width: 100%;
+      align-items: center;
+      background-color: #00b894;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background-color: #019270;
+    }
+    .confirmation-message {
+      padding: 15px;
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      margin-top: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Choose Payment Method</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+  </header>
+
+  <div class="payment-container">
+    <h2>How would you like to pay?</h2>
+    <div class="payment-methods" id="paymentMethods">
+      <div class="method" data-method="upi"><i class="fa-solid fa-indian-rupee-sign"></i> UPI</div>
+      <div class="method" data-method="cod"><i class="fa-solid fa-money-bill-wave"></i> Cash on Delivery</div>
+      <div class="method" data-method="netbanking"><i class="fa-solid fa-building-columns"></i> Net Banking</div>
+      <div class="method" data-method="card"><i class="fa-solid fa-credit-card"></i> Credit/Debit Card</div>
+      <div class="method" data-method="wallet"><i class="fa-brands fa-google-pay"></i> Wallet (Paytm/PhonePe)</div>
+    </div>
+
+    <div class="payment-details" id="paymentDetails"></div>
+    <button class="submit-btn" onclick="submitPayment()">Pay Now</button>
+    <div id="confirmationBox"></div>
+
+  </div>
+  <script>
+    const methods = document.querySelectorAll('.method');
+    const detailsBox = document.getElementById('paymentDetails');
+    let selectedMethod = "";
+
+    methods.forEach(method => {
+      method.addEventListener('click', () => {
+        methods.forEach(m => m.classList.remove('active'));
+        method.classList.add('active');
+        selectedMethod = method.dataset.method;
+        renderForm(selectedMethod);
+      });
+    });
+
+    function renderForm(method) {
+      let html = '';
+      switch (method) {
+        case 'upi':
+          html = `
+            <label>Enter UPI ID:</label>
+            <input type="text" placeholder="e.g., username@bank" id="upiId">
+          `;
+          break;
+        case 'cod':
+          html = `<p><strong>Note:</strong> Pay with cash at the time of delivery. No additional charges.</p>`;
+          break;
+        case 'netbanking':
+          html = `
+            <label>Select Bank:</label>
+            <select id="netBank">
+              <option value="">--Choose Bank--</option>
+              <option value="SBI">State Bank of India</option>
+              <option value="HDFC">HDFC Bank</option>
+              <option value="ICICI">ICICI Bank</option>
+              <option value="AXIS">Axis Bank</option>
+            </select>
+          `;
+          break;
+        case 'card':
+          html = `
+            <label>Card Number:</label>
+            <input type="text" placeholder="1234 5678 9012 3456" id="cardNumber">
+            <label>Expiry Date:</label>
+            <input type="text" placeholder="MM/YY" id="expiry">
+            <label>CVV:</label>
+            <input type="password" placeholder="***" id="cvv">
+          `;
+          break;
+        case 'wallet':
+          html = `
+            <label>Select Wallet:</label>
+            <select id="walletType">
+              <option value="Paytm">Paytm</option>
+              <option value="PhonePe">PhonePe</option>
+              <option value="Google Pay">Google Pay</option>
+            </select>
+            <label>Mobile Number:</label>
+            <input type="text" placeholder="Enter your wallet-linked number" id="walletNumber">
+          `;
+          break;
+      }
+
+      detailsBox.innerHTML = html;
+    }
+
+   function submitPayment() {
+  if (!selectedMethod) {
+    alert("Please select a payment method.");
+    return;
+  }
+
+  // Save selected payment method in localStorage
+  localStorage.setItem("paymentMethod", selectedMethod);
+
+  // Clear the cart
+  localStorage.removeItem("cart");
+
+  if (typeof cart !== 'undefined') {
+    cart = [];
+  }
+
+  // Redirect to payment-success.html
+  window.location.href = "payment-success.html";
+}
+
+
+  </script>
+</body>
+</html>

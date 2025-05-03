@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+        .truck-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .truck {
+            width: 300px; /* Adjust the size if needed */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📦Order Confirmed!</h1>
+        <p>Your items are on the way 🚚</p>
+    </header>
+    <div class="truck-container">
+        <img class="truck" src="e-comimg/truck.gif" alt="Delivery Truck">
+    </div>
+    <script>
+        setTimeout(() => {
+            window.location.href = "index.html"; // Redirect back to home after 3 seconds
+        }, 3300);
+    </script>
+</body>
+</html>
